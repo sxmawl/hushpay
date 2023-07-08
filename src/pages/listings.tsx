@@ -46,7 +46,7 @@ function Listings() {
 
   return (
 
-    <div className='px-12 min-h-screen route-bg'>
+    <div className='px-6 md:px-12 min-h-screen route-bg'>
       <Navbar />
       <div className='flex items-center mt-12'>
         <input onChange={handleSearch} className='border-[1px] text-[0.8rem] md:text-base focus:outline-none focus:border-white relative w-full rounded-md py-2 px-4 bg-primary border-[rgb(255,255,255,0.5)]' type='text' placeholder='search for a project / cause you care about'></input>
