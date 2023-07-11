@@ -10,6 +10,13 @@ body {
   font-family: "Manrope", sans-serif;
 }
 
+.homepage-bg {
+  background: url('/assets/home.png');
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: contain;
+}
+
 .bg-primary {
   background-color: #0d0d0d;
 }
@@ -50,8 +57,13 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
+.powered-by-indicator {
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+}
+
 .route-bg {
-  background: url(../assets/background.png), #0d0d0d no-repeat;
+  background: url(../../public/assets/background.png), #0d0d0d no-repeat bottom;
 }
 
 .active {
