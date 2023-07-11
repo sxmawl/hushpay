@@ -31,7 +31,7 @@ function PaymentCard({
           </div>
         </div>
         <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">on: {date}</div>
-        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">for: <span className="cursor-pointer text-[rgb(255,255,255,0.95)] border-b-[1px] border-slate-500">{cause}</span></div>
+        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">for: <span className="cursor-pointer text-[rgb(255,255,255,0.95)] underline">{cause}</span></div>
       </div>
       <button className="bg-secondary px-4 py-2 mt-4 md:mt-0 rounded-md font-bold">view details</button>
       <div className="hidden"> :D </div>

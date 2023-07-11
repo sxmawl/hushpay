@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import "@/app/globals.css";
 import Altnavbar from "@/components/altNavbar";
 import Payments from "@/components/payments";
+import ProfileListings from "@/components/profileListings";
 
 function Passbook() {
   const [active, setActive] = React.useState("passbook");
@@ -37,7 +38,7 @@ function Passbook() {
         </div>
       </div>
       <div className="mt-12 flex flex-wrap justify-between flex-col md:flex-row"></div>
-      {active === "passbook" ? <Payments/> : ""}
+      {active === "passbook" ? <Payments/> : <ProfileListings/>}
     </div>
   );
 }
