@@ -10,29 +10,25 @@ function Payments() {
 
   const data = [
     {
-      amount: "203.4",
-      inSol: "22.3",
+      amount: 203.4,
       date: "24th March, 2023",
       cause: "education bill donation",
       sent: false,
     },
     {
-      amount: "203.4",
-      inSol: "22.3",
+      amount: 203.4,
       date: "24th March, 2023",
       cause: "someone's birthday",
       sent: true,
     },
     {
-      amount: "203.4",
-      inSol: "22.3",
+      amount: 203,
       date: "24th March, 2023",
       cause: "save my doggo",
       sent: false,
     },
     {
-      amount: "203.4",
-      inSol: "22.3",
+      amount: 203.42,
       date: "24th March, 2023",
       cause: "animal shelter donation",
       sent: true,
@@ -52,8 +48,8 @@ function Payments() {
   const payments = filtered.map((payment) => {
     return (
       <PaymentCard
+        key={payment.sent.toString() + payment.amount}
         amount={payment.amount}
-        inSol={payment.inSol}
         date={payment.date}
         cause={payment.cause}
         sent={payment.sent}

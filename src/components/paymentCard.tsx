@@ -1,19 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 function PaymentCard({
   amount,
-  inSol,
   date,
   cause,
   sent,
 }: {
-  amount: string;
-  inSol: string;
+  amount: number;
   date: string;
   cause: string;
   sent: boolean;
 }) {
+  const [inSol, setInSol] = React.useState(0);
+  useEffect(() => {
+    try {
+      fetch("https://api.coingecko.com/api/v3/coins/solana")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.market_data.current_price.usd);
+          setInSol(
+            parseFloat((amount / data.market_data.current_price.usd).toFixed(2))
+          );
+        });
+    } catch (e) {}
+  }, []);
+
+  const goToExplorer = () => {
+    window.open(`https://explorer.solana.com/tx/${cause}`);
+  };
+
   return (
     <div className="payment-card w-full md:w-[49%] lowercase mb-8 flex justify-between flex-col md:flex-row items-center">
       <div className="flex flex-col">
@@ -30,10 +46,22 @@ function PaymentCard({
             </span>
           </div>
         </div>
-        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">on: {date}</div>
-        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">for: <span className="cursor-pointer text-[rgb(255,255,255,0.95)] underline">{cause}</span></div>
+        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">
+          on: {date}
+        </div>
+        <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">
+          for:{" "}
+          <span className="cursor-pointer text-[rgb(255,255,255,0.95)] underline">
+            {cause}
+          </span>
+        </div>
       </div>
-      <button className="bg-secondary px-4 py-2 mt-4 md:mt-0 rounded-md font-bold">view details</button>
+      <button
+        onClick={goToExplorer}
+        className="bg-secondary px-4 py-2 mt-4 md:mt-0 rounded-md font-bold"
+      >
+        view details
+      </button>
       <div className="hidden"> :D </div>
     </div>
   );

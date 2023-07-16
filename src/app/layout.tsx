@@ -1,13 +1,21 @@
-import './globals.css'
+"use client";
+import { Wallet } from "@/components/Wallet";
+import "./globals.css";
+import Navbar from "@/components/navbar";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <body>
-      <div>{children}</div>
-    </body>
-  )
+    <html>
+      <body>
+        <Wallet>
+          <Navbar />
+          {children}
+        </Wallet>
+      </body>
+    </html>
+  );
 }

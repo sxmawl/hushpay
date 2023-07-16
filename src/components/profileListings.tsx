@@ -1,5 +1,4 @@
 import React from "react";
-import PaymentCard from "./paymentCard";
 import ProfileListingCard from "./profileListingCard";
 
 function ProfileListings() {
@@ -41,6 +40,7 @@ function ProfileListings() {
   const payments = filtered.map((listing) => {
     return (
       <ProfileListingCard
+      key={listing.type.toString() + listing.amount}
         amount={listing.amount}
         date={listing.date}
         cause={listing.cause}
