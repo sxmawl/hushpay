@@ -40,6 +40,20 @@ body {
   box-shadow: 0px 0px 10px 0px rgba(254, 236, 149, 0.15);
 }
 
+.modal-payment-amount {
+  border-radius: 20px;
+  padding: 3.5rem 5rem;
+  border: 1.648px solid rgba(255, 255, 255, 0.5);
+  background: rgba(18, 18, 18, 0.90);
+  box-shadow: 0px 0px 13.55029582977295px 0px rgba(254, 236, 149, 0.15);
+  -webkit-backdrop-filter: blur(7.5px);
+  backdrop-filter: blur(7.5px);
+}
+
+.uppper-forced {
+  text-transform: uppercase !important;
+}
+
 .payment-card {
   border-radius: 20px;
   padding: 1.5rem;
@@ -95,4 +109,15 @@ body {
     font-size: 1rem;
     font-weight: semibold;
   }
+}
+
+
+
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
 }

@@ -4,7 +4,6 @@ import Logo from "./logo";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { AiOutlineUser } from "react-icons/ai";
-import { BsPen } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,9 +25,9 @@ function Navbar() {
 
   const renderConnectedContainer = () => (
     <div className="flex items-center">
-      <button className="rounded-lg bg-secondary flex items-center justify-center text-sm font-extrabold py-2 px-4">
+      {/* <button className="rounded-lg bg-secondary flex items-center justify-center text-sm font-extrabold py-2 px-4">
         create a payment link <BsPen className="ml-2" />
-      </button>
+      </button> */}
       <Link
         href="/passbook"
         className={`${

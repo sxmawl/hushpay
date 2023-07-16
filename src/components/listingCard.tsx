@@ -1,5 +1,6 @@
 import React from "react";
 import { AiOutlineCheck } from "react-icons/ai";
+import Modal from "./donateModal";
 
 function ListingCard({
   name,
@@ -24,9 +25,8 @@ function ListingCard({
         {description}
       </div>
       <div className="flex items-center justify-start mt-4 mb-2 font-bold text-[0.75rem]">
-        <button className="bg-secondary px-2 py-2 rounded-md">
-          donate some $$$
-        </button>
+        
+        <Modal />
         <div className="px-2 py-2 ml-4 cursor-pointer primary-button rounded-md">
           what is this about??
         </div>

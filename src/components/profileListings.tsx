@@ -59,14 +59,14 @@ function ProfileListings() {
         >
           public
         </button>
-        <button
+        {/* <button
           onClick={() => changeActiveState("private")}
           className={`px-4 pb-2 text-[#88898B] ${
             state === "private" ? "current" : ""
           } `}
         >
           private
-        </button>
+        </button> */}
       </div>
       <div className="w-full border-t-2 flex flex-wrap justify-between pt-8 border-[rgb(217,217,217,0.4)] pb-2">
         {payments}
