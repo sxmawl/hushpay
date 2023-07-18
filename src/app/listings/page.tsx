@@ -1,13 +1,23 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "@/app/globals.css";
 import Navbar from "@/components/navbar";
 import { AiOutlineSearch } from "react-icons/ai";
 import ListingCard from "@/components/listingCard";
 import RootLayout from "@/app/layout";
+import { Elusiv } from "@elusiv/sdk";
+import { getParams, send, topup } from "../../../middlewares/elusiv";
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 function Listings() {
-  const [search, setSearch] = React.useState("");
+  const [search, setSearch] = useState("");
   // const [pages, setPages] = React.useState(1) will implement pagination later.
+  const [balance, setBalance] = useState(BigInt(0));
+  const [isLoading, setIsLoading] = useState(true);
+  const [elusiv, setElusiv] = useState<Elusiv>();
+  const [keyPair, setKeyPair] = useState<Keypair>();
+  const [fetching, setFetching] = useState(true);
+  const [connection, setConnection] = useState<Connection>();
+  const [isSending, setIsSending] = useState(false);
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -54,6 +64,57 @@ function Listings() {
       />
     );
   });
+
+  useEffect(() => {
+    const setParams = async () => {
+      const { elusiv: e, keyPair: kp, connection: conn } = await getParams();
+      setElusiv(e);
+      setKeyPair(kp);
+      setConnection(conn);
+      setIsLoading(false);
+    };
+
+    setParams();
+  }, []);
+
+  useEffect(() => {
+    const getBalance = async () => {
+      const privateBalance = await elusiv!.getLatestPrivateBalance("LAMPORTS");
+      setBalance(privateBalance);
+      setFetching(false);
+    };
+
+    if (elusiv !== null) {
+      getBalance().then(() => console.log("Balance updated"));
+    }
+  }, [elusiv]);
+
+  const topupHandler = async (e:any) => {
+    e.preventDefault();
+    const sig = await topup(
+      elusiv!,
+      keyPair!,
+      LAMPORTS_PER_SOL,
+      "LAMPORTS"
+    );
+    console.log(`Topup complete with sig ${sig.signature}`);
+  };
+
+  const sendHandler = async (e:any) => {
+    e.preventDefault();
+	setIsSending(true);
+    if (balance > BigInt(0)) {
+		// Send half a SOL
+		const sig = await send(
+			elusiv!,
+			new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
+			0.5 * LAMPORTS_PER_SOL,
+			"LAMPORTS"
+		);
+	}
+  };
+
+
 
   return (
     <div className="px-6 md:px-12 min-h-screen route-bg">

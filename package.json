@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@elusiv/sdk": "^0.1.18",
+    "@noble/ed25519": "^2.0.0",
     "@solana/wallet-adapter-base": "^0.9.22",
     "@solana/wallet-adapter-phantom": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.32",
