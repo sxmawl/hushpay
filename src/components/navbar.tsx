@@ -4,6 +4,7 @@ import Logo from "./logo";
 import { useWallet } from "@solana/wallet-adapter-react";
 import dynamic from "next/dynamic";
 import { AiOutlineUser } from "react-icons/ai";
+import { BsPen } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -25,9 +26,9 @@ function Navbar() {
 
   const renderConnectedContainer = () => (
     <div className="flex items-center">
-      {/* <button className="rounded-lg bg-secondary flex items-center justify-center text-sm font-extrabold py-2 px-4">
+      <button className="rounded-lg bg-secondary flex items-center justify-center text-sm font-extrabold py-2 px-4">
         create a payment link <BsPen className="ml-2" />
-      </button> */}
+      </button>
       <Link
         href="/passbook"
         className={`${
@@ -46,6 +47,26 @@ function Navbar() {
           <Logo />
         </div>
         <div className="ml-4 font-bold text-[1.5rem]">hushpay</div>
+      </div>
+      <div className="flex items-center justify-between w-1/5">
+        <Link
+          className="hover:text-[#feec95] font-medium transition-all"
+          href="/"
+        >
+          home
+        </Link>
+        <Link
+          className="hover:text-[#feec95] font-medium transition-all"
+          href="/passbook"
+        >
+          passbook
+        </Link>
+        <Link
+          className="hover:text-[#feec95] font-medium transition-all"
+          href="/listings"
+        >
+          listings
+        </Link>
       </div>
       {wallet.publicKey
         ? renderConnectedContainer()
