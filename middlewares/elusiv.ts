@@ -1,54 +1,49 @@
 import { Elusiv, SEED_MESSAGE, TokenType } from "@elusiv/sdk";
 import { sign } from "@noble/ed25519";
+import { WalletContextState } from "@solana/wallet-adapter-react/lib/types/useWallet";
 import { Cluster, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import pkg from 'bs58';
 
 
-export async function getParams(): Promise<{
+export async function getParams(wallet:WalletContextState): Promise<{
     elusiv: Elusiv;
-    keyPair: Keypair;
     connection: Connection;
 }> {
     const connection = new Connection("https://api.devnet.solana.com");
     // Add your own private key here
-    const decodedKey = pkg.decode("privateKeyHere")
-    const keyPair = Keypair.fromSecretKey(decodedKey);
+    // const decodedKey = pkg.decode("privateKeyHere")
+    // const keyPair = Keypair.fromSecretKey(decodedKey);
+    let uint8Array = new TextEncoder().encode(SEED_MESSAGE);
+    const seed = await wallet.signMessage!(uint8Array);
 
-    const seed = getSignedSeed(keyPair);
     console.log(seed);
 
     const elusiv = await Elusiv.getElusivInstance(
         seed,
-        keyPair.publicKey,
+        wallet.publicKey!,
         connection,
         "devnet"
     );
 
     return {
         elusiv,
-        keyPair,
         connection,
     };
 }
 
-function getSignedSeed(keyPair: Keypair) {
-    return sign(
-        Buffer.from(SEED_MESSAGE, "utf-8"),
-        keyPair.secretKey.slice(0, 32)
-    );
-};
 
 export const topup = async (
     elusivInstance: Elusiv,
-    keyPair: Keypair,
+    wallet: WalletContextState,
     amount: number,
     tokenType: TokenType
 ) => {
     // Build our topup transaction
     const topupTx = await elusivInstance.buildTopUpTx(amount, tokenType);
     // Sign it (only needed for topups, as we're topping up from our public key there)
-    topupTx.tx.partialSign(keyPair);
+    const signedTx = await wallet.signTransaction!(topupTx.tx)
     // Send it off
+    topupTx.setSignedTx(signedTx)
     return elusivInstance.sendElusivTx(topupTx);
 };
 

@@ -8,8 +8,10 @@ import RootLayout from "@/app/layout";
 import { Elusiv } from "@elusiv/sdk";
 import { getParams, send, topup } from "../../../middlewares/elusiv";
 import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 function Listings() {
   const [search, setSearch] = useState("");
+  const wallet = useWallet()
   // const [pages, setPages] = React.useState(1) will implement pagination later.
   const [balance, setBalance] = useState(BigInt(0));
   const [isLoading, setIsLoading] = useState(true);
@@ -67,9 +69,8 @@ function Listings() {
 
   useEffect(() => {
     const setParams = async () => {
-      const { elusiv: e, keyPair: kp, connection: conn } = await getParams();
+      const { elusiv: e, connection: conn } = await getParams(wallet);
       setElusiv(e);
-      setKeyPair(kp);
       setConnection(conn);
       setIsLoading(false);
     };
@@ -89,29 +90,29 @@ function Listings() {
     }
   }, [elusiv]);
 
-  const topupHandler = async (e:any) => {
+  const topupHandler = async (e: any) => {
     e.preventDefault();
     const sig = await topup(
       elusiv!,
-      keyPair!,
+      wallet!,
       LAMPORTS_PER_SOL,
       "LAMPORTS"
     );
     console.log(`Topup complete with sig ${sig.signature}`);
   };
 
-  const sendHandler = async (e:any) => {
+  const sendHandler = async (e: any) => {
     e.preventDefault();
-	setIsSending(true);
+    setIsSending(true);
     if (balance > BigInt(0)) {
-		// Send half a SOL
-		const sig = await send(
-			elusiv!,
-			new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
-			0.5 * LAMPORTS_PER_SOL,
-			"LAMPORTS"
-		);
-	}
+      // Send half a SOL
+      const sig = await send(
+        elusiv!,
+        new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
+        0.5 * LAMPORTS_PER_SOL,
+        "LAMPORTS"
+      );
+    }
   };
 
 
