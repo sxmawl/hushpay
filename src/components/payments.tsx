@@ -1,58 +1,71 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PaymentCard from "./paymentCard";
+import { useWallet } from "@solana/wallet-adapter-react";
+import axios from "axios";
 
 function Payments() {
   const [state, setState] = React.useState("all");
+  const [data, setData] = React.useState([]);
+  const wallet = useWallet();
 
   const changeActiveState = (newValue: string) => {
     setState(newValue);
   };
 
-  const data = [
-    {
-      amount: 203.4,
-      date: "24th March, 2023",
-      cause: "education bill donation",
-      sent: false,
-    },
-    {
-      amount: 203.4,
-      date: "24th March, 2023",
-      cause: "someone's birthday",
-      sent: true,
-    },
-    {
-      amount: 203,
-      date: "24th March, 2023",
-      cause: "save my doggo",
-      sent: false,
-    },
-    {
-      amount: 203.42,
-      date: "24th March, 2023",
-      cause: "animal shelter donation",
-      sent: true,
-    },
-  ];
+  interface Cause {
+    name: string;
+    description: string;
+    verified: boolean;
+    _id: string;
+    publicKey: string;  
+    createdAt: string;
+  }
+  interface Payment {
+    to: string;
+    from: string;
+    causeId: Cause;
+    createdAt: string;
+    amount: number;
+    txnId: string;
+    _id: string;
+  }
 
-  const filtered = data.filter((payment) => {
-    if (state === "all") {
-      return true;
-    } else if (state === "received") {
-      return !payment.sent;
-    } else if (state === "sent") {
-      return payment.sent;
+  useEffect(() => {
+    if (wallet.publicKey) {
+      axios
+        .get(`http://localhost:3000/api/getPayments`, {
+          headers: { user: wallet.publicKey.toString() },
+        })
+        .then((res) => {
+          setData(res.data.payments);
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+  }, [wallet]);
+
+  const filtered = data.filter((payment: Payment) => {
+    if (wallet.publicKey) {
+      if (state === "all") {
+        return true;
+      } else if (state === "received") {
+        return payment.to === wallet.publicKey.toString();
+      } else if (state === "sent") {
+        return payment.from === wallet.publicKey.toString();
+      }
     }
   });
 
-  const payments = filtered.map((payment) => {
+  const payments = filtered.map((payment: Payment) => {
     return (
       <PaymentCard
-        key={payment.sent.toString() + payment.amount}
+        key={payment._id}
         amount={payment.amount}
-        date={payment.date}
-        cause={payment.cause}
-        sent={payment.sent}
+        date={payment.createdAt}
+        cause={payment.causeId}
+        txnId={payment.txnId}
+        sent={payment.from === wallet.publicKey!.toString()}
       />
     );
   });

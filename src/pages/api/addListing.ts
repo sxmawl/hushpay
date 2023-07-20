@@ -9,10 +9,9 @@ const handler = async (req: any, res: any) => {
       name: req.body.name,
       description: req.body.description,
       publicKey: req.body.publicKey,
-      verified: false,
     });
     await listing.save();
-    res.status(200).json({ message: "Payment added successfully." });
+    res.status(200).json({ message: "Listing added successfully." });
   } else {
     res.status(400).json({ error: "This method is not allowed." });
   }

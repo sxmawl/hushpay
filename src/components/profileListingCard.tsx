@@ -6,7 +6,7 @@ function ProfileListingCard({
   cause,
   details
 }: {
-  amount: string;
+  amount: number;
   date: string;
   cause: string;
   details?: string;

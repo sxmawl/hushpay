@@ -1,48 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProfileListingCard from "./profileListingCard";
+import { useWallet } from "@solana/wallet-adapter-react";
+import axios from "axios";
+
+interface Listing {
+  _id: string;
+  amount: number;
+  cause: string;
+  createdAt: string;
+}
 
 function ProfileListings() {
+  const wallet = useWallet();
   const [state, setState] = React.useState("public");
+  const [data, setData] = React.useState<Listing[]>([]);
 
   const changeActiveState = (newValue: string) => {
     setState(newValue);
   };
 
-  const data = [
-    {
-      amount: "145203.4",
-      date: "24th March, 2023",
-      cause: "educat",
-      type: "private"
-    },
-    {
-      amount: "5953.204",
-      date: "24th March, 2023",
-      cause: "someo",
-      type: 'private'
-    },
-    {
-      amount: "5933.4",
-      date: "24th March, 2023",
-      cause: "save m",
-      type: 'public'
-    },
-    {
-      amount: "2301.4",
-      date: "24th March, 2023",
-      cause: "animal shelter donation",
-      type: 'public'
-    },
-  ];
+  useEffect(() => {
+    if (wallet.publicKey) {
+      axios
+        .get(`http://localhost:3000/api/getPersonalListings`, {
+          headers: { user: wallet.publicKey.toString() },
+        })
+        .then((res) => {
+          setData(res.data.listings);
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+  }, [wallet]);
 
-  const filtered = data.filter(listing => listing.type == state);
+  // const filtered = data.filter((listing) => listing.type == state);
 
-  const payments = filtered.map((listing) => {
+  const payments = data.map((listing: Listing) => {
     return (
       <ProfileListingCard
-      key={listing.type.toString() + listing.amount}
+        key={listing._id}
         amount={listing.amount}
-        date={listing.date}
+        date={listing.createdAt}
         cause={listing.cause}
       />
     );

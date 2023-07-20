@@ -1,16 +1,27 @@
 import React, { useEffect } from "react";
 import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
+interface Cause {
+  name: string;
+  description: string;
+  publicKey: string;
+  verified: boolean;
+  _id: string;
+  createdAt: string;
+}
+
 function PaymentCard({
   amount,
   date,
   cause,
   sent,
+  txnId
 }: {
   amount: number;
   date: string;
-  cause: string;
+  cause: Cause;
   sent: boolean;
+  txnId: string;
 }) {
   const [inSol, setInSol] = React.useState(0);
   useEffect(() => {
@@ -27,7 +38,7 @@ function PaymentCard({
   }, []);
 
   const goToExplorer = () => {
-    window.open(`https://explorer.solana.com/tx/${cause}`);
+    window.open(`https://explorer.solana.com/tx/${txnId}`);
   };
 
   return (
@@ -52,7 +63,7 @@ function PaymentCard({
         <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">
           for:{" "}
           <span className="cursor-pointer text-[rgb(255,255,255,0.95)] underline">
-            {cause}
+            {cause.name}
           </span>
         </div>
       </div>

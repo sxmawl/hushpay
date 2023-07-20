@@ -3,7 +3,11 @@ import AmountInput from "./amountInput";
 import SuccessModal from "./successModal";
 import { MdOutlineCancel } from "react-icons/md";
 
-export default function DonateModal({ to }: { to: string }) {
+export default function DonateModal({
+  to,
+}: {
+  to: string;
+}) {
   const [showModal, setShowModal] = React.useState(false);
   const [modalStep, setModalStep] = React.useState(1);
 
@@ -17,9 +21,8 @@ export default function DonateModal({ to }: { to: string }) {
     setModalStep(1);
   };
 
-  const makePayment = () => {
-    console.log(to);
-    
+  const makePayment = (e: any) => {
+
     setModalStep(2);
   };
 

@@ -37,7 +37,7 @@ function Listings() {
       axios
         .get("http://localhost:3000/api/getAllListings")
         .then((res) => {
-          console.log(res.data.listings);
+          // console.log(res.data.listings);
           setData(res.data.listings);
         })
         .catch((err) => {
@@ -48,32 +48,25 @@ function Listings() {
     }
   }, []);
 
-  // const data = [
-  //   {
-  //     name: "my education pls",
-  //     description:
-  //       "contribute to organizations dedicated to animal welfare, animal rights, and the protection of endangered species. Your donations support animal rescue and rehabilitation efforts, conservation initiatives, advocacy for animal rights.",
-  //     verified: true,
-  //   },
-  //   {
-  //     name: "save my grades",
-  //     description:
-  //       "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam",
-  //     verified: false,
-  //   },
-  //   {
-  //     name: "Animal Welfare",
-  //     description:
-  //       "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam",
-  //     verified: true,
-  //   },
-  //   {
-  //     name: "Animal Welfare",
-  //     description:
-  //       "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco laboriosam Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullamco labor quis nostrum exercitationem ullamco laboriosam",
-  //     verified: true,
-  //   },
-  // ];
+  // const topupHandler = async (e: any) => {
+  //   e.preventDefault();
+  //   const sig = await topup(elusiv!, wallet!, LAMPORTS_PER_SOL, "LAMPORTS");
+  //   console.log(`Topup complete with sig ${sig.signature}`);
+  // };
+
+  // const sendHandler = async (e: any) => {
+  //   e.preventDefault();
+  //   setIsSending(true);
+  //   if (balance > BigInt(0)) {
+  //     // Send half a SOL
+  //     const sig = await send(
+  //       elusiv!,
+  //       new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
+  //       0.5 * LAMPORTS_PER_SOL,
+  //       "LAMPORTS"
+  //     );
+  //   }
+  // };
 
   const filteredCauses = data.filter((cause) =>
     cause.name.toLowerCase().includes(search.toLowerCase())
@@ -104,35 +97,17 @@ function Listings() {
 
   useEffect(() => {
     const getBalance = async () => {
-      const privateBalance = await elusiv!.getLatestPrivateBalance("LAMPORTS");
-      setBalance(privateBalance);
-      setFetching(false);
+      if (elusiv) {
+        const privateBalance = await elusiv.getLatestPrivateBalance("LAMPORTS");
+        setBalance(privateBalance);
+        setFetching(false);
+      }
     };
 
     if (elusiv !== null) {
       getBalance().then(() => console.log("Balance updated"));
     }
   }, [elusiv]);
-
-  const topupHandler = async (e: any) => {
-    e.preventDefault();
-    const sig = await topup(elusiv!, wallet!, LAMPORTS_PER_SOL, "LAMPORTS");
-    console.log(`Topup complete with sig ${sig.signature}`);
-  };
-
-  const sendHandler = async (e: any) => {
-    e.preventDefault();
-    setIsSending(true);
-    if (balance > BigInt(0)) {
-      // Send half a SOL
-      const sig = await send(
-        elusiv!,
-        new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
-        0.5 * LAMPORTS_PER_SOL,
-        "LAMPORTS"
-      );
-    }
-  };
 
   return (
     <div className="px-6 md:px-12 min-h-screen route-bg">

@@ -1,5 +1,6 @@
 import Listing from "../../../models/listings";
 import connectDb from "../../../middlewares/mongoose";
+import payments from "../../../models/payments";
 
 const handler = async (
   req: any,
