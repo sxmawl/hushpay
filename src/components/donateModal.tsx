@@ -10,13 +10,9 @@ import axios from "axios";
 
 export default function DonateModal({
   to,
-  elusiv,
-  connection,
   causeId
 }: {
   to: string;
-  elusiv: Elusiv;
-  connection: Connection;
   causeId: string
 }) {
   const [showModal, setShowModal] = React.useState(false);
@@ -26,7 +22,8 @@ export default function DonateModal({
   const [isSending, setIsSending] = useState(false);
 
   const [amountToBeSent, setAmountToBeSent] = useState<number>(0);
-  const [inSol, setInSol] = useState<number>(0)
+  const [inSol, setInSol] = useState<number>(0);
+
 
   const changeInputHandler = (amount: number) => {
     setAmountToBeSent(amount)
@@ -35,16 +32,6 @@ export default function DonateModal({
   const wallet = useWallet()
 
   useEffect(() => {
-    const getBalance = async () => {
-      if (elusiv) {
-        const privateBalance = await elusiv.getLatestPrivateBalance("LAMPORTS");
-        setBalance(privateBalance);
-      }
-    };
-
-    if (elusiv !== null) {
-      getBalance().then(() => console.log("Balance updated"));
-    }
     try {
       fetch("https://api.coingecko.com/api/v3/coins/solana")
         .then((res) => res.json())
@@ -53,26 +40,25 @@ export default function DonateModal({
           setInSol(data.market_data.current_price.usd);
         });
     } catch (e) { }
-  }, [elusiv]);
+  }, []);
 
-  const topupHandler = async (event: any, amount: number) => {
+  const topupHandler = async (event: any, amount: number, elusiv: Elusiv) => {
     event.preventDefault();
     const sig = await topup(elusiv!, wallet?.signTransaction, amount * 1.0001 * LAMPORTS_PER_SOL, "LAMPORTS");
     // console.log(`Topup complete with sig ${sig.signature}`);
     console.log("Topup Signature: ", sig.signature)
   };
 
-  const sendHandler = async (event: any, to_address: string, amount: number) => {
+  const sendHandler = async (event: any, to_address: string, amount: number, elusiv: Elusiv): Promise<string | undefined> => {
     event.preventDefault();
-    if (balance > BigInt(0)) {
       const sig = await send(
         elusiv!,
         new PublicKey(to_address), // enter recepient here
         amount * LAMPORTS_PER_SOL,
         "LAMPORTS"
       );
+      console.log("Txn Signature: ", sig.signature)
       return sig.signature;
-    }
   };
 
   const openModel = () => {
@@ -85,16 +71,22 @@ export default function DonateModal({
     setModalStep(1);
   };
 
-  const makePayment = async (e: any) => {
+  const makePayment = async (event: any) => {
     setIsSending(true);
-    await topupHandler(e, amountToBeSent!)
-    const sig = await sendHandler(e, to, amountToBeSent!)
-    addPayment(sig!)
+    if (to == wallet.publicKey?.toString()) {
+      alert("You cannot donate to yourself!")
+      setIsSending(false)
+      return
+    }
+    const { elusiv: elusiv, connection: conn } = await getParams(wallet)
+    await topupHandler(event, amountToBeSent!, elusiv)
+    const signature = await sendHandler(event, to, amountToBeSent!, elusiv)
+    await addPayment(signature!)
     setIsSending(false)
     setModalStep(2);
   };
 
-  function addPayment(sig:string, ) {
+  function addPayment(sig: string,) {
     try {
       axios
         .post("/api/addPayment", {

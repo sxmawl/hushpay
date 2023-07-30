@@ -18,10 +18,6 @@ function Listings() {
   const [search, setSearch] = useState("");
   const wallet = useWallet();
 
-  const [elusiv, setElusiv] = useState<Elusiv>();
-  const [connection, setConnection] = useState<Connection>();
-
-
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
@@ -31,7 +27,7 @@ function Listings() {
   useEffect(() => {
     try {
       axios
-        .get("/api/getAllListings")
+        .get("http://localhost:3000/api/getAllListings")
         .then((res) => {
           // console.log(res.data.listings);
           setData(res.data.listings);
@@ -39,17 +35,6 @@ function Listings() {
         .catch((err) => {
           alert(err);
         });
-
-      if (!elusiv || !connection) {
-        getParams(wallet)
-          .then(({ elusiv: e, connection: conn }) => {
-            console.log("ELUSIV:", e);
-            console.log("CONNECTION: ", conn);
-            setElusiv(e);
-            setConnection(conn);
-          });
-      } 
-      // }
     } catch (err) {
       alert(err);
     }
@@ -71,8 +56,6 @@ function Listings() {
         name={item.name}
         description={item.description}
         verified={item.verified}
-        elusiv={elusiv!}
-        connection={connection!}
         id = {item._id}
       />
     );
