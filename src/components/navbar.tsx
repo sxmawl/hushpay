@@ -28,8 +28,14 @@ function Navbar() {
 
   const renderConnectedContainer = () => (
     <div className="flex items-center">
+      <Link
+        className="hover:text-[#feec95] font-semibold list-button transition-all mr-8 "
+        href="/listings"
+      >
+        view all projects
+      </Link>
       <button className="rounded-lg bg-secondary flex items-center justify-center text-sm font-extrabold">
-        <ListingModal /> 
+        <ListingModal />
       </button>
       <Link
         href="/passbook"
@@ -45,31 +51,17 @@ function Navbar() {
   return (
     <div className="flex px-12 justify-between items-center pt-4 bg-[#0D0D0D]">
       <div className="flex items-center">
-        <div className="flex items-end justify-center w-8 h-8 rounded-full overflow-hidden bg-[#F0F0F0]">
-          <Logo />
-        </div>
-        <div className="ml-4 font-bold text-[1.5rem]">hushpay</div>
-      </div>
-      <div className="flex items-center justify-between w-1/5">
         <Link
-          className="hover:text-[#feec95] font-medium transition-all"
+          className="hover:text-[#feec95] font-medium transition-all flex items-center"
           href="/"
         >
-          home
-        </Link>
-        <Link
-          className="hover:text-[#feec95] font-medium transition-all"
-          href="/passbook"
-        >
-          passbook
-        </Link>
-        <Link
-          className="hover:text-[#feec95] font-medium transition-all"
-          href="/listings"
-        >
-          listings
+          <div className="flex items-end justify-center w-8 h-8 rounded-full overflow-hidden bg-[#F0F0F0]">
+            <Logo />
+          </div>
+          <div className="ml-4 font-bold text-[1.5rem]">hushpay</div>
         </Link>
       </div>
+
       {wallet.publicKey
         ? renderConnectedContainer()
         : renderNotConnectedContainer()}
