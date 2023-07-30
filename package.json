@@ -9,15 +9,30 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@elusiv/sdk": "^0.1.18",
+    "@noble/ed25519": "^2.0.0",
+    "@solana/wallet-adapter-base": "^0.9.22",
+    "@solana/wallet-adapter-phantom": "^0.9.23",
+    "@solana/wallet-adapter-react": "^0.15.32",
+    "@solana/wallet-adapter-react-ui": "^0.9.31",
+    "@solana/web3.js": "^1.78.0",
     "@types/node": "20.3.3",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "bigint-buffer": "^1.1.5",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.4",
     "next": "13.4.8",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2",
+    "react-icons": "^4.10.1",
     "typescript": "5.1.6"
+  },
+  "devDependencies": {
+    "encoding": "^0.1.13",
+    "tailwindcss": "^3.3.2"
   }
 }
