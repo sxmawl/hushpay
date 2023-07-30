@@ -4,16 +4,21 @@ import SuccessModal from "./successModal";
 import { MdOutlineCancel } from "react-icons/md";
 import { getParams, send, topup } from "../../middlewares/elusiv";
 import { Elusiv } from "@elusiv/sdk";
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import {
+  Connection,
+  Keypair,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+} from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import axios from "axios";
 
 export default function DonateModal({
   to,
-  causeId
+  causeId,
 }: {
   to: string;
-  causeId: string
+  causeId: string;
 }) {
   const [showModal, setShowModal] = React.useState(false);
   const [modalStep, setModalStep] = React.useState(1);
@@ -24,12 +29,11 @@ export default function DonateModal({
   const [amountToBeSent, setAmountToBeSent] = useState<number>(0);
   const [inSol, setInSol] = useState<number>(0);
 
-
   const changeInputHandler = (amount: number) => {
-    setAmountToBeSent(amount)
-  }
+    setAmountToBeSent(amount);
+  };
 
-  const wallet = useWallet()
+  const wallet = useWallet();
 
   useEffect(() => {
     try {
@@ -39,26 +43,36 @@ export default function DonateModal({
           console.log(data.market_data.current_price.usd);
           setInSol(data.market_data.current_price.usd);
         });
-    } catch (e) { }
+    } catch (e) {}
   }, []);
 
   const topupHandler = async (event: any, amount: number, elusiv: Elusiv) => {
     event.preventDefault();
-    const sig = await topup(elusiv!, wallet?.signTransaction, amount * 1.0001 * LAMPORTS_PER_SOL, "LAMPORTS");
+    const sig = await topup(
+      elusiv!,
+      wallet?.signTransaction,
+      amount * 1.0001 * LAMPORTS_PER_SOL,
+      "LAMPORTS"
+    );
     // console.log(`Topup complete with sig ${sig.signature}`);
-    console.log("Topup Signature: ", sig.signature)
+    console.log("Topup Signature: ", sig.signature);
   };
 
-  const sendHandler = async (event: any, to_address: string, amount: number, elusiv: Elusiv): Promise<string | undefined> => {
+  const sendHandler = async (
+    event: any,
+    to_address: string,
+    amount: number,
+    elusiv: Elusiv
+  ): Promise<string | undefined> => {
     event.preventDefault();
-      const sig = await send(
-        elusiv!,
-        new PublicKey(to_address), // enter recepient here
-        amount * LAMPORTS_PER_SOL,
-        "LAMPORTS"
-      );
-      console.log("Txn Signature: ", sig.signature)
-      return sig.signature;
+    const sig = await send(
+      elusiv!,
+      new PublicKey(to_address), // enter recepient here
+      amount * LAMPORTS_PER_SOL,
+      "LAMPORTS"
+    );
+    console.log("Txn Signature: ", sig.signature);
+    return sig.signature;
   };
 
   const openModel = () => {
@@ -74,19 +88,19 @@ export default function DonateModal({
   const makePayment = async (event: any) => {
     setIsSending(true);
     if (to == wallet.publicKey?.toString()) {
-      alert("You cannot donate to yourself!")
-      setIsSending(false)
-      return
+      alert("You cannot donate to yourself!");
+      setIsSending(false);
+      return;
     }
-    const { elusiv: elusiv, connection: conn } = await getParams(wallet)
-    await topupHandler(event, amountToBeSent!, elusiv)
-    const signature = await sendHandler(event, to, amountToBeSent!, elusiv)
-    await addPayment(signature!)
-    setIsSending(false)
+    const { elusiv: elusiv, connection: conn } = await getParams(wallet);
+    await topupHandler(event, amountToBeSent!, elusiv);
+    const signature = await sendHandler(event, to, amountToBeSent!, elusiv);
+    await addPayment(signature!);
+    setIsSending(false);
     setModalStep(2);
   };
 
-  function addPayment(sig: string,) {
+  function addPayment(sig: string) {
     try {
       axios
         .post("/api/addPayment", {
@@ -97,7 +111,7 @@ export default function DonateModal({
           from: wallet.publicKey,
         })
         .then((res) => {
-          alert(res.data.message);
+          console.log(res.data.message);
         });
     } catch (error) {
       console.log(error);
@@ -119,7 +133,11 @@ export default function DonateModal({
                   onClick={closeModal}
                 >
                   {" "}
-                  {isSending ? "" : <MdOutlineCancel color="rgb(255,255,255,0.5)" size={25} />}
+                  {isSending ? (
+                    ""
+                  ) : (
+                    <MdOutlineCancel color="rgb(255,255,255,0.5)" size={25} />
+                  )}
                 </div>
                 {modalStep == 1 ? (
                   <>
@@ -134,7 +152,10 @@ export default function DonateModal({
                       </p>
                     </div>
 
-                    <AmountInput onChangeInput={changeInputHandler} liveSolPrice={inSol} />
+                    <AmountInput
+                      onChangeInput={changeInputHandler}
+                      liveSolPrice={inSol}
+                    />
 
                     <div className="flex items-center justify-center p-6 rounded-b">
                       <button
