@@ -27,7 +27,7 @@ function Listings() {
   useEffect(() => {
     try {
       axios
-        .get("http://localhost:3000/api/getAllListings")
+        .get("/api/getAllListings")
         .then((res) => {
           // console.log(res.data.listings);
           setData(res.data.listings);
