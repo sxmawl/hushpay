@@ -1,17 +1,23 @@
 import React from "react";
 import { AiOutlineCheck } from "react-icons/ai";
 import Modal from "./donateModal";
+import { Elusiv } from "@elusiv/sdk";
+import { Connection } from "@solana/web3.js";
 
 function ListingCard({
   name,
   description,
   verified,
   to,
+  elusiv,
+  connection
 }: {
   name: string;
   to: string;
   verified: boolean;
   description: string;
+  elusiv: Elusiv;
+  connection: Connection
 }) {
   return (
     <div className="listing-card w-full md:w-[49%] lowercase mb-8 flex flex-col justify-between">
@@ -27,7 +33,7 @@ function ListingCard({
         {description}
       </div>
       <div className="flex items-center justify-start mt-4 mb-2 font-bold text-[0.75rem]">
-        <Modal to={to}/>
+        <Modal elusiv={elusiv} connection={connection} to={to}/>
         <div className="px-2 py-2 ml-4 cursor-pointer primary-button rounded-md">
           what is this about??
         </div>

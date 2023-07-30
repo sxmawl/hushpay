@@ -17,14 +17,10 @@ import axios from "axios";
 function Listings() {
   const [search, setSearch] = useState("");
   const wallet = useWallet();
-  // const [pages, setPages] = React.useState(1) will implement pagination later.
-  const [balance, setBalance] = useState(BigInt(0));
-  const [isLoading, setIsLoading] = useState(true);
+
   const [elusiv, setElusiv] = useState<Elusiv>();
-  const [keyPair, setKeyPair] = useState<Keypair>();
-  const [fetching, setFetching] = useState(true);
   const [connection, setConnection] = useState<Connection>();
-  const [isSending, setIsSending] = useState(false);
+
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
@@ -43,34 +39,31 @@ function Listings() {
         .catch((err) => {
           alert(err);
         });
+
+      if (!elusiv || !connection) {
+        getParams(wallet)
+          .then(({ elusiv: e, connection: conn }) => {
+            console.log("ELUSIV:", e);
+            console.log("CONNECTION: ", conn);
+            // localStorage.setItem("elusiv", JSON.stringify(e));
+            // localStorage.setItem("connection", JSON.stringify(conn));
+            setElusiv(e);
+            setConnection(conn);
+          });
+      } 
+      // }
     } catch (err) {
       alert(err);
     }
   }, []);
 
-  // const topupHandler = async (e: any) => {
-  //   e.preventDefault();
-  //   const sig = await topup(elusiv!, wallet!, LAMPORTS_PER_SOL, "LAMPORTS");
-  //   console.log(`Topup complete with sig ${sig.signature}`);
-  // };
 
-  // const sendHandler = async (e: any) => {
-  //   e.preventDefault();
-  //   setIsSending(true);
-  //   if (balance > BigInt(0)) {
-  //     // Send half a SOL
-  //     const sig = await send(
-  //       elusiv!,
-  //       new PublicKey("BCBDLNA2UQd2wKE2wTqhF7wragxZTQVeq87vYunEjsdG"), // enter recepient here
-  //       0.5 * LAMPORTS_PER_SOL,
-  //       "LAMPORTS"
-  //     );
-  //   }
-  // };
 
   const filteredCauses = data.filter((cause) =>
     cause.name.toLowerCase().includes(search.toLowerCase())
   );
+
+
 
   const listingCards = filteredCauses.map((item) => {
     return (
@@ -80,34 +73,13 @@ function Listings() {
         name={item.name}
         description={item.description}
         verified={item.verified}
+        elusiv={elusiv!}
+        connection={connection!}
       />
     );
   });
 
-  useEffect(() => {
-    const setParams = async () => {
-      const { elusiv: e, connection: conn } = await getParams(wallet);
-      setElusiv(e);
-      setConnection(conn);
-      setIsLoading(false);
-    };
 
-    setParams();
-  }, []);
-
-  useEffect(() => {
-    const getBalance = async () => {
-      if (elusiv) {
-        const privateBalance = await elusiv.getLatestPrivateBalance("LAMPORTS");
-        setBalance(privateBalance);
-        setFetching(false);
-      }
-    };
-
-    if (elusiv !== null) {
-      getBalance().then(() => console.log("Balance updated"));
-    }
-  }, [elusiv]);
 
   return (
     <div className="px-6 md:px-12 min-h-screen route-bg">

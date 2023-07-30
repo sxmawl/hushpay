@@ -1,4 +1,5 @@
 import { Elusiv, SEED_MESSAGE, TokenType } from "@elusiv/sdk";
+import { SignerWalletAdapterProps } from "@solana/wallet-adapter-base";
 // import { sign } from "@noble/ed25519";
 import { WalletContextState } from "@solana/wallet-adapter-react/lib/types/useWallet";
 import { Connection, PublicKey } from "@solana/web3.js";
@@ -25,6 +26,8 @@ export async function getParams(wallet: WalletContextState): Promise<{
     "devnet"
   );
 
+  console.log("SEED: ", seed)
+
   return {
     elusiv,
     connection,
@@ -33,14 +36,15 @@ export async function getParams(wallet: WalletContextState): Promise<{
 
 export const topup = async (
   elusivInstance: Elusiv,
-  wallet: WalletContextState,
+  signTransaction: SignerWalletAdapterProps['signTransaction'] | undefined,
   amount: number,
   tokenType: TokenType
 ) => {
+  console.log(elusivInstance);
   // Build our topup transaction
   const topupTx = await elusivInstance.buildTopUpTx(amount, tokenType);
   // Sign it (only needed for topups, as we're topping up from our public key there)
-  const signedTx = await wallet.signTransaction!(topupTx.tx);
+  const signedTx = await signTransaction!(topupTx.tx);
   // Send it off
   topupTx.setSignedTx(signedTx);
   return elusivInstance.sendElusivTx(topupTx);

@@ -1,15 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AmountInput from "./amountInput";
 import SuccessModal from "./successModal";
 import { MdOutlineCancel } from "react-icons/md";
+import { getParams, send, topup } from "../../middlewares/elusiv";
+import { Elusiv } from "@elusiv/sdk";
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export default function DonateModal({
   to,
+  elusiv,
+  connection
 }: {
   to: string;
+  elusiv: Elusiv;
+  connection: Connection;
 }) {
   const [showModal, setShowModal] = React.useState(false);
   const [modalStep, setModalStep] = React.useState(1);
+
+  const [balance, setBalance] = useState(BigInt(0));
+  const [isLoading, setIsLoading] = useState(true);
+  const [fetching, setFetching] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+
+  const wallet = useWallet()
+
+  useEffect(() => {
+    const getBalance = async () => {
+      if (elusiv) {
+        const privateBalance = await elusiv.getLatestPrivateBalance("LAMPORTS");
+        setBalance(privateBalance);
+        setFetching(false);
+      }
+    };
+
+    if (elusiv !== null) {
+      getBalance().then(() => console.log("Balance updated"));
+    }
+  }, [elusiv]);
+
+  const topupHandler = async (event: any) => {
+    event.preventDefault();
+    console.log("Elusiv: ,", elusiv);
+    console.log("Wallet: ,", wallet);
+    
+    const sig = await topup(elusiv!, wallet?.signTransaction,  0.1*LAMPORTS_PER_SOL, "LAMPORTS");
+    // console.log(`Topup complete with sig ${sig.signature}`);
+    console.log("Topup Signature: ",sig.signature)
+  };
+
+  const sendHandler = async (event: any, to_address: string) => {
+    event.preventDefault();
+    if (balance > BigInt(0)) {
+      const sig = await send(
+        elusiv!,
+        new PublicKey(to_address), // enter recepient here
+        0.05 * LAMPORTS_PER_SOL,
+        "LAMPORTS"
+      );
+      console.log("Transaction Sig: ", sig.signature)
+    }
+  };
 
   const openModel = () => {
     setShowModal(true);
@@ -21,8 +73,11 @@ export default function DonateModal({
     setModalStep(1);
   };
 
-  const makePayment = (e: any) => {
-
+  const makePayment = async (e: any) => {
+    setIsSending(true);
+    await topupHandler(e)
+    await sendHandler(e, to)
+    setIsSending(false)
     setModalStep(2);
   };
 
@@ -62,8 +117,9 @@ export default function DonateModal({
                       <button
                         className="bg-secondary px-20 text-lg py-2 rounded-md"
                         onClick={makePayment}
+                        disabled = {isSending ? true : false}
                       >
-                        go for it
+                        {isSending ? "sending..." : "go for it"}
                       </button>
                     </div>
                   </>
