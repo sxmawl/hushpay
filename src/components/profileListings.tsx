@@ -6,8 +6,9 @@ import axios from "axios";
 interface Listing {
   _id: string;
   amount: number;
-  cause: string;
+  name: string;
   createdAt: string;
+  description: string;
 }
 
 function ProfileListings() {
@@ -42,7 +43,8 @@ function ProfileListings() {
         key={listing._id}
         amount={listing.amount}
         date={listing.createdAt}
-        cause={listing.cause}
+        cause={listing.name}
+        details={listing.description}
       />
     );
   });
