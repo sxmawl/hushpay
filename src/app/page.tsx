@@ -27,9 +27,15 @@ export default function Home() {
               projects to donate <FaArrowRight className="ml-2" />
             </button>
           </Link>
-          <div className="px-4 py-2 ml-4 cursor-pointer primary-button rounded-md">
-            why should i care?
-          </div>
+          <Link
+            className="text-white"
+            href="https://sxmawl.notion.site/here-s-why-this-matters-c4acc027393f496c897cc5ba1164247c?pvs=4"
+            target="_blank"
+          >
+            <div className="px-4 py-2 ml-4 cursor-pointer primary-button rounded-md">
+              why should i care?
+            </div>
+          </Link>
         </div>
       </div>
     </main>
