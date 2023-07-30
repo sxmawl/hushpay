@@ -2,15 +2,23 @@ import React, { useState } from "react";
 import Image from 'next/image'
 
 export default function AmountInput({
-    liveSolPrice
+    liveSolPrice,
+    onChangeInput
 }: {
     liveSolPrice: number;
+    onChangeInput: (amount: number) => void
 }) {
-    const [amount, setAmount] = useState<string>("0")
+    const [amount, setAmount] = useState<string>("");
+
+    const changeInputHandler = (e:any) => {
+        onChangeInput(parseFloat(e.target.value))
+        setAmount(e.target.value)
+    }
+
     return (
         <div className="flex items-center justify-between border-r-10 border-[1px] rounded-md border-[rgb(255,255,255,0.5)] py-1 px-2">
             <input
-                onChange={(event)=>setAmount(event.target.value)}
+                onChange={changeInputHandler}
                 className=" w-24 text-[0.8rem] bg-transparent md:text-base focus:outline-none relative py-2 px-2"
                 type="number"
                 placeholder="0"

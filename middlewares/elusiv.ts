@@ -26,7 +26,6 @@ export async function getParams(wallet: WalletContextState): Promise<{
     "devnet"
   );
 
-  console.log("SEED: ", seed)
 
   return {
     elusiv,

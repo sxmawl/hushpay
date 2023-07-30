@@ -45,8 +45,6 @@ function Listings() {
           .then(({ elusiv: e, connection: conn }) => {
             console.log("ELUSIV:", e);
             console.log("CONNECTION: ", conn);
-            // localStorage.setItem("elusiv", JSON.stringify(e));
-            // localStorage.setItem("connection", JSON.stringify(conn));
             setElusiv(e);
             setConnection(conn);
           });

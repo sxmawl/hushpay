@@ -20,9 +20,14 @@ export default function DonateModal({
   const [modalStep, setModalStep] = React.useState(1);
 
   const [balance, setBalance] = useState(BigInt(0));
-  const [isLoading, setIsLoading] = useState(true);
-  const [fetching, setFetching] = useState(true);
   const [isSending, setIsSending] = useState(false);
+
+  const [amountToBeSent, setAmountToBeSent] = useState<number>(0);
+  const [inSol, setInSol] = useState<number>(0)
+
+  const changeInputHandler = (amount:number) => {
+    setAmountToBeSent(amount)
+  }
 
   const wallet = useWallet()
 
@@ -31,32 +36,36 @@ export default function DonateModal({
       if (elusiv) {
         const privateBalance = await elusiv.getLatestPrivateBalance("LAMPORTS");
         setBalance(privateBalance);
-        setFetching(false);
       }
     };
 
     if (elusiv !== null) {
       getBalance().then(() => console.log("Balance updated"));
     }
+    try {
+      fetch("https://api.coingecko.com/api/v3/coins/solana")
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data.market_data.current_price.usd);
+          setInSol(data.market_data.current_price.usd);
+        });
+    } catch (e) {}
   }, [elusiv]);
 
-  const topupHandler = async (event: any) => {
+  const topupHandler = async (event: any, amount: number) => {
     event.preventDefault();
-    console.log("Elusiv: ,", elusiv);
-    console.log("Wallet: ,", wallet);
-    
-    const sig = await topup(elusiv!, wallet?.signTransaction,  0.1*LAMPORTS_PER_SOL, "LAMPORTS");
+    const sig = await topup(elusiv!, wallet?.signTransaction,  amount*1.0001*LAMPORTS_PER_SOL, "LAMPORTS");
     // console.log(`Topup complete with sig ${sig.signature}`);
     console.log("Topup Signature: ",sig.signature)
   };
 
-  const sendHandler = async (event: any, to_address: string) => {
+  const sendHandler = async (event: any, to_address: string, amount:number) => {
     event.preventDefault();
     if (balance > BigInt(0)) {
       const sig = await send(
         elusiv!,
         new PublicKey(to_address), // enter recepient here
-        0.05 * LAMPORTS_PER_SOL,
+        amount * LAMPORTS_PER_SOL,
         "LAMPORTS"
       );
       console.log("Transaction Sig: ", sig.signature)
@@ -75,8 +84,8 @@ export default function DonateModal({
 
   const makePayment = async (e: any) => {
     setIsSending(true);
-    await topupHandler(e)
-    await sendHandler(e, to)
+    await topupHandler(e, amountToBeSent!)
+    await sendHandler(e, to, amountToBeSent!)
     setIsSending(false)
     setModalStep(2);
   };
@@ -96,7 +105,7 @@ export default function DonateModal({
                   onClick={closeModal}
                 >
                   {" "}
-                  <MdOutlineCancel color="rgb(255,255,255,0.5)" size={25} />
+                  {isSending ? "" : <MdOutlineCancel color="rgb(255,255,255,0.5)" size={25} />}
                 </div>
                 {modalStep == 1 ? (
                   <>
@@ -111,7 +120,7 @@ export default function DonateModal({
                       </p>
                     </div>
 
-                    <AmountInput liveSolPrice={24.44} />
+                    <AmountInput onChangeInput={changeInputHandler} liveSolPrice={inSol} />
 
                     <div className="flex items-center justify-center p-6 rounded-b">
                       <button
