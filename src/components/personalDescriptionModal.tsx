@@ -1,16 +1,8 @@
-import { useWallet } from "@solana/wallet-adapter-react";
-import axios from "axios";
 import React from "react";
-import { BsPen } from "react-icons/bs";
 import { MdOutlineCancel } from "react-icons/md";
 
 export default function PersonalDescriptionModal({ desc }: { desc: string }) {
-  const wallet = useWallet();
   const [showModal, setShowModal] = React.useState(false);
-
-  const [name, setName] = React.useState("");
-  const [description, setDescription] = React.useState("");
-
   const openModel = () => {
     setShowModal(true);
   };
@@ -18,23 +10,6 @@ export default function PersonalDescriptionModal({ desc }: { desc: string }) {
   const closeModal = () => {
     setShowModal(false);
   };
-
-  function addListing() {
-    try {
-      axios
-        .post("/api/addListing", {
-          name: name,
-          description: description,
-          publicKey: wallet.publicKey,
-        })
-        .then((res) => {
-          alert(res.data.message);
-          closeModal();
-        });
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <>
