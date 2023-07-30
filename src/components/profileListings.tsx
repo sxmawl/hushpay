@@ -22,7 +22,7 @@ function ProfileListings() {
   useEffect(() => {
     if (wallet.publicKey) {
       axios
-        .get(`http://localhost:3000/api/getPersonalListings`, {
+        .get(`/api/getPersonalListings`, {
           headers: { user: wallet.publicKey.toString() },
         })
         .then((res) => {

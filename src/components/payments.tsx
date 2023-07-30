@@ -33,7 +33,7 @@ function Payments() {
   useEffect(() => {
     if (wallet.publicKey) {
       axios
-        .get(`http://localhost:3000/api/getPayments`, {
+        .get(`/api/getPayments`, {
           headers: { user: wallet.publicKey.toString() },
         })
         .then((res) => {

@@ -22,7 +22,7 @@ export default function ListingModal() {
   function addListing() {
     try {
       axios
-        .post("http://localhost:3000/api/addListing", {
+        .post("/api/addListing", {
           name: name,
           description: description,
           publicKey: wallet.publicKey,

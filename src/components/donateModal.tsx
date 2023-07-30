@@ -6,15 +6,18 @@ import { getParams, send, topup } from "../../middlewares/elusiv";
 import { Elusiv } from "@elusiv/sdk";
 import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
+import axios from "axios";
 
 export default function DonateModal({
   to,
   elusiv,
-  connection
+  connection,
+  causeId
 }: {
   to: string;
   elusiv: Elusiv;
   connection: Connection;
+  causeId: string
 }) {
   const [showModal, setShowModal] = React.useState(false);
   const [modalStep, setModalStep] = React.useState(1);
@@ -25,7 +28,7 @@ export default function DonateModal({
   const [amountToBeSent, setAmountToBeSent] = useState<number>(0);
   const [inSol, setInSol] = useState<number>(0)
 
-  const changeInputHandler = (amount:number) => {
+  const changeInputHandler = (amount: number) => {
     setAmountToBeSent(amount)
   }
 
@@ -49,17 +52,17 @@ export default function DonateModal({
           console.log(data.market_data.current_price.usd);
           setInSol(data.market_data.current_price.usd);
         });
-    } catch (e) {}
+    } catch (e) { }
   }, [elusiv]);
 
   const topupHandler = async (event: any, amount: number) => {
     event.preventDefault();
-    const sig = await topup(elusiv!, wallet?.signTransaction,  amount*1.0001*LAMPORTS_PER_SOL, "LAMPORTS");
+    const sig = await topup(elusiv!, wallet?.signTransaction, amount * 1.0001 * LAMPORTS_PER_SOL, "LAMPORTS");
     // console.log(`Topup complete with sig ${sig.signature}`);
-    console.log("Topup Signature: ",sig.signature)
+    console.log("Topup Signature: ", sig.signature)
   };
 
-  const sendHandler = async (event: any, to_address: string, amount:number) => {
+  const sendHandler = async (event: any, to_address: string, amount: number) => {
     event.preventDefault();
     if (balance > BigInt(0)) {
       const sig = await send(
@@ -68,7 +71,7 @@ export default function DonateModal({
         amount * LAMPORTS_PER_SOL,
         "LAMPORTS"
       );
-      console.log("Transaction Sig: ", sig.signature)
+      return sig.signature;
     }
   };
 
@@ -85,10 +88,29 @@ export default function DonateModal({
   const makePayment = async (e: any) => {
     setIsSending(true);
     await topupHandler(e, amountToBeSent!)
-    await sendHandler(e, to, amountToBeSent!)
+    const sig = await sendHandler(e, to, amountToBeSent!)
+    addPayment(sig!)
     setIsSending(false)
     setModalStep(2);
   };
+
+  function addPayment(sig:string, ) {
+    try {
+      axios
+        .post("/api/addPayment", {
+          txnId: sig,
+          causeId: causeId,
+          amount: amountToBeSent,
+          to: to,
+          from: wallet.publicKey,
+        })
+        .then((res) => {
+          alert(res.data.message);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -126,7 +148,7 @@ export default function DonateModal({
                       <button
                         className="bg-secondary px-20 text-lg py-2 rounded-md"
                         onClick={makePayment}
-                        disabled = {isSending ? true : false}
+                        disabled={isSending ? true : false}
                       >
                         {isSending ? "sending..." : "go for it"}
                       </button>
