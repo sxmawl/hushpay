@@ -58,7 +58,7 @@ function PaymentCard({
           </div>
         </div>
         <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">
-          on: {date}
+          on: {date.slice(0, 10)}
         </div>
         <div className="flex justify-center md:justify-start text-sm font-bold text-[rgb(255,255,255,0.75)]">
           for:{" "}
