@@ -9,10 +9,10 @@ export default function Home() {
       className="px-12 homepage-bg min-h-[92vh]"
       style={{ backgroundImage: `url(${bg.src})` }}
     >
-      <div className="flex min-h-full flex-col items-center justify-start p-24 text-[1rem]">
-        <div className="px-4 py-2 mt-0 mb-6 powered-by-indicator">
+      <div className="flex font-extrabold min-h-full flex-col items-center justify-start p-24 text-[1rem]">
+        <div className="px-4 py-2 mt-0 mb-6 opacity-75 powered-by-indicator">
           powered by:{" "}
-          <Link href="https://elusiv.com" className="underline">
+          <Link href="https://elusiv.com" className="underlined">
             {" "}
             elusiv{" "}
           </Link>
