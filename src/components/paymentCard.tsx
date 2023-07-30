@@ -23,15 +23,15 @@ function PaymentCard({
   sent: boolean;
   txnId: string;
 }) {
-  const [inSol, setInSol] = React.useState(0);
+  const [inUSD, setInUSD] = React.useState(0);
   useEffect(() => {
     try {
       fetch("https://api.coingecko.com/api/v3/coins/solana")
         .then((res) => res.json())
         .then((data) => {
           console.log(data.market_data.current_price.usd);
-          setInSol(
-            parseFloat((amount / data.market_data.current_price.usd).toFixed(2))
+          setInUSD(
+            parseFloat((amount * data.market_data.current_price.usd).toFixed(2))
           );
         });
     } catch (e) {}
@@ -51,9 +51,9 @@ function PaymentCard({
             <AiOutlinePlus className="text-[#D6FE95] text-[1.5rem]" />
           )}
           <div className="font-semibold ml-2">
-            ${amount}{" "}
+            ${inUSD}{" "}
             <span className="text-[rgb(255,255,255,0.5)] uppercase">
-              &#40;{inSol} SOL&#41;
+              &#40;{amount} SOL&#41;
             </span>
           </div>
         </div>
